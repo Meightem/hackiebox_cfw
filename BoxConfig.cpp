@@ -71,6 +71,13 @@ String BoxConfig::getAsJson() {
     ConfigLog* logCfg = &_config.log;
     logDoc["sdLog"] = logCfg->sdLog;
 
+    JsonObject mqttDoc = doc.createNestedObject("mqtt");
+    ConfigMQTT* mqttCfg = &_config.mqtt;
+    mqttDoc["host"] = mqttCfg->hostname;
+    mqttDoc["port"] = mqttCfg->port;
+    mqttDoc["username"] = mqttCfg->username;
+    mqttDoc["password"] = mqttCfg->password;
+
     JsonObject miscDoc = doc.createNestedObject("misc");
     ConfigMisc* miscCfg = &_config.misc;
     miscDoc["autodump"] = miscCfg->autodump;
@@ -109,6 +116,13 @@ bool BoxConfig::setFromJson(String json) {
     strncpy(&wifiCfg->ssid[0], wifiDoc["ssid"].as<char*>(), sizeof(wifiCfg->ssid));
     strncpy(&wifiCfg->password[0], wifiDoc["password"].as<char*>(), sizeof(wifiCfg->password));
 
+    JsonObject mqttDoc = doc["mqtt"];
+    ConfigMQTT* mqttCfg = &_config.mqtt;
+    strncpy(&mqttCfg->hostname[0], mqttDoc["host"].as<char*>(), sizeof(mqttCfg->hostname));
+    mqttCfg->port = mqttDoc["port"].as<uint16_t>();
+    strncpy(&mqttCfg->username[0], mqttDoc["username"].as<char*>(), sizeof(mqttCfg->username));
+    strncpy(&mqttCfg->password[0], mqttDoc["password"].as<char*>(), sizeof(mqttCfg->password));
+
     JsonObject logDoc = doc["log"];
     ConfigLog* logCfg = &_config.log;
     logCfg->sdLog = logDoc["sdLog"].as<bool>();
@@ -142,6 +156,11 @@ bool BoxConfig::setFromJson(String json) {
             if (batteryCfg->voltageFactor == 67690) //Fix for wrong value in previous CFW
                 batteryCfg->voltageFactor = 27850;
             _config.version = 7;
+            write();
+            break;
+        case 7:
+            mqttCfg->port = 1883;
+            _config.version = 8;
             write();
             break;
         default:
@@ -180,6 +199,9 @@ void BoxConfig::_initializeConfig() {
 
     ConfigLog* log = &_config.log;
     log->sdLog = false;
+
+    ConfigMQTT* mqtt = &_config.mqtt;
+    mqtt->port = 1883;
 
     ConfigMisc* misc = &_config.misc;
     misc->autodump = false;

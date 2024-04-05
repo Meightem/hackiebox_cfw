@@ -108,6 +108,9 @@ void Hackiebox::setup() {
 
     boxPlayer = BoxPlayer();
     boxPlayer.begin();
+
+    mqttHandler = MQTTHandler(config->mqtt.hostname, config->mqtt.port, config->mqtt.username, config->mqtt.password);
+    mqttHandler.begin();
     
     boxAccel.setName("Accelerometer");
     boxBattery.setName("Battery");
@@ -120,13 +123,15 @@ void Hackiebox::setup() {
     boxPower.setName("Power");
     boxWiFi.setName("WiFi");
     webServer.setName("Webserver");
+    mqttHandler.setName("MQTTHandler");
     
     boxDAC.priority = 0;
     boxRFID.priority = 1;
     boxAccel.priority = 2;
     boxLEDs.priority = 3;
     boxEars.priority = 4;
-    webServer.priority = 5;
+    mqttHandler.priority = 5;
+    webServer.priority = 6;
     boxPower.priority = 10;
     boxWiFi.priority = 50;
     boxBattery.priority = 100;
@@ -144,7 +149,9 @@ void Hackiebox::setup() {
     threadController.add(&boxLEDs);
     threadController.add(&boxPower);
     threadController.add(&boxWiFi);
+    threadController.add(&mqttHandler);
     threadController.add(&webServer);
+
     threadController.sortThreads();
 
     Log.info("Config: %s", Config.getAsJson().c_str());
@@ -159,6 +166,7 @@ void Hackiebox::setup() {
     boxLEDs.onRun(ThreadCallbackHandler([&]() { boxLEDs.loop(); }));
     boxPower.onRun(ThreadCallbackHandler([&]() { boxPower.loop(); }));
     boxWiFi.onRun(ThreadCallbackHandler([&]() { boxWiFi.loop(); }));
+    mqttHandler.onRun(ThreadCallbackHandler([&]() { mqttHandler.loop(); }));
     webServer.onRun(ThreadCallbackHandler([&]() { webServer.loop(); }));
 
     //logStreamSse.setSsePaused(false);

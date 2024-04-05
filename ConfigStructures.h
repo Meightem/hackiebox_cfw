@@ -1,7 +1,7 @@
 #ifndef ConfigStructures_h
 #define ConfigStructures_h
 
-#define CONFIG_ACTIVE_VERSION 7
+#define CONFIG_ACTIVE_VERSION 8
 
 typedef struct {
   uint32_t voltageFactor;
@@ -40,6 +40,13 @@ typedef struct {
 } ConfigLog;
 
 typedef struct {
+  char hostname[32];
+  int port;
+  char username[32];
+  char password[32];
+} ConfigMQTT;
+
+typedef struct {
   bool autodump;
   bool swd;
   uint8_t watchdogSeconds;
@@ -50,6 +57,7 @@ typedef struct {
   ConfigBattery battery;
   ConfigButtonEars buttonEars;
   ConfigWifi wifi;
+  ConfigMQTT mqtt;
   ConfigLog log;
   ConfigMisc misc;
 } ConfigStruct;

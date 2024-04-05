@@ -24,6 +24,8 @@
 #include "BoxSD.h"
 #include "BoxTonies.h"
 
+#include "MQTTHandler.h"
+
 #include "WrapperWiFi.h"
 #include "WrapperWebServer.h"
 
@@ -65,6 +67,7 @@ class Hackiebox {
         BoxRFID boxRFID;
         BoxSD boxSD;
         BoxTonies boxTonie;
+        MQTTHandler mqttHandler;
         WrapperWiFi boxWiFi;
         WrapperWebServer webServer;
 

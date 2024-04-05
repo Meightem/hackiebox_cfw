@@ -247,6 +247,7 @@ void BoxEvents::handleAccelerometerOrientationEvent(BoxAccelerometer::Orientatio
     char orientEvent[9];
     snprintf(orientEvent, 9, "{\"id\":%i}", orient);
     Box.webServer.sendEvent("Orientation", orientEvent, false);
+    Box.mqttHandler.publishOrientationState(orientText);
 
     Box.boxPower.feedSleepTimer();
 }
