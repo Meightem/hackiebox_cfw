@@ -14,7 +14,9 @@ class MQTTHandler : public EnhancedThread {
         loop();
 
     void publishConfig();
+    void publishStatusState(String state);
     void publishOrientationState(String state);
+    void publishTonieState(String state);
     
     private:
         const char* _hostname;
@@ -24,10 +26,11 @@ class MQTTHandler : public EnhancedThread {
         MQTTClient mqttClient;
         WiFiClient wifiClient;
         String _json;
-        String getDeviceConfig();
-        
+        void publishSensorDeviceConfig(const char* deviceName);
+        void fillSensorDeviceConfig(char* configStr, const char* deviceName);
         unsigned long lastMillis;
         unsigned long counter;
+        bool mqttReady;
 };
 
 #endif

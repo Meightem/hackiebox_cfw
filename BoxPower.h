@@ -11,6 +11,7 @@ class BoxPower : public EnhancedThread {
             PRE_HIBERNATE,
             PRE_RESET,
             BOX_IDLE,
+            BOX_ACTIVE,
         };
         void
             initPins(),

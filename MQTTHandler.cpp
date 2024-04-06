@@ -21,6 +21,8 @@ void MQTTHandler::begin() {
   publishConfig();
 
   Log.info("Finished initalising MQTT");
+
+  mqttReady = true;
 }
 
 void MQTTHandler::loop() {  
@@ -29,28 +31,31 @@ void MQTTHandler::loop() {
 
 
 void MQTTHandler::publishConfig() {
-  mqttClient.publish("homeassistant/sensor/toniebox-orientation/config", getDeviceConfig(), true, 0);
+  publishSensorDeviceConfig("orientation");
+  publishSensorDeviceConfig("status");
+  publishSensorDeviceConfig("tonie");
 }
 
 void MQTTHandler::publishOrientationState(String state) {
-  mqttClient.publish("homeassistant/sensor/toniebox-orientation/state", state);
+  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-orientation/state", state);
 }
 
-String MQTTHandler::getDeviceConfig() {
-  StaticJsonDocument<384> doc;
+void MQTTHandler::publishStatusState(String state) {
+  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-status/state", state);
+}
 
-  doc["~"] = "homeassistant/sensor/toniebox-orientation";
-  doc["name"] = "Toniebox Orientation";
-  doc["uniq_id"] = "toniebox-orientation";
-  doc["stat_t"] = "~/state";
-  doc["schema"] = "json";
+void MQTTHandler::publishTonieState(String state) {
+  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-tonie/state", state);
+}
 
-  JsonObject device = doc.createNestedObject("device");
-  device["name"] = "toniebox";
-  JsonArray device_identifiers = device.createNestedArray("identifiers");
-  device_identifiers.add("toniebox");
+void MQTTHandler::publishSensorDeviceConfig(const char* deviceName) {
+  char devicePath[64];
+  snprintf(devicePath, 64, "homeassistant/sensor/toniebox-%s/config", deviceName);
+  char config[384];
+  fillSensorDeviceConfig(config, deviceName);
+  mqttClient.publish(devicePath, config, true, 0);
+}
 
-  _json = "";
-  serializeJson(doc, _json);
-  return _json;
+void MQTTHandler::fillSensorDeviceConfig(char* configStr, const char* deviceName) {
+  snprintf(configStr, 384, "{\"~\":\"homeassistant/sensor/toniebox-%s\",\"name\":\"Toniebox %s\",\"uniq_id\":\"toniebox-%s\",\"stat_t\":\"~/state\",\"device\":{\"name\":\"toniebox\",\"identifiers\":[\"toniebox\"]}}", deviceName, deviceName, deviceName);
 }

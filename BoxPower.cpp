@@ -22,6 +22,8 @@ void BoxPower::loop() {
     if (_sleepMinutes > 0 && deltaMinutes >= _sleepMinutes) {
         Log.verbose("millis_tmp=%l, _lastFeed=%l, deltaMinutes=%l", millis_tmp, _lastFeed, deltaMinutes);
         Events.handlePowerEvent(PowerEvent::BOX_IDLE);
+        _lastFeed = millis();
+        Box.watchdog_feed();
     }
 }
 
@@ -41,6 +43,7 @@ void BoxPower::feedSleepTimer() {
 void BoxPower::feedSleepTimerSilent() {
     _lastFeed = millis();
     Box.watchdog_feed();
+    Events.handlePowerEvent(PowerEvent::BOX_ACTIVE);
 }
 
 void BoxPower::_preparePowerDown() {
