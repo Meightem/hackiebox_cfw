@@ -15,10 +15,12 @@ class MQTTHandler : public EnhancedThread {
 
     void publishConfig();
     void publishStatusState(String state);
+    void publishTapState(String state);
     void publishOrientationState(String state);
     void publishTonieState(String state);
     void publishBatterieState(String state);
     void publishChargerState(String state);
+    void publishEarsState(String state);
     
     private:
         const char* _hostname;

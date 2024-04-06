@@ -32,14 +32,20 @@ void MQTTHandler::loop() {
 
 void MQTTHandler::publishConfig() {
   publishSensorDeviceConfig("orientation");
+  publishSensorDeviceConfig("tap");
   publishSensorDeviceConfig("status");
   publishSensorDeviceConfig("tonie");
   publishSensorDeviceConfig("batterie");
   publishSensorDeviceConfig("charger");
+  publishSensorDeviceConfig("ears");
 }
 
 void MQTTHandler::publishOrientationState(String state) {
   if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-orientation/state", state);
+}
+
+void MQTTHandler::publishTapState(String state) {
+  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-tap/state", state);
 }
 
 void MQTTHandler::publishStatusState(String state) {
@@ -56,6 +62,10 @@ void MQTTHandler::publishBatterieState(String state) {
 
 void MQTTHandler::publishChargerState(String state) {
   if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-charger/state", state);
+}
+
+void MQTTHandler::publishEarsState(String state) {
+  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-ears/state", state);
 }
 
 void MQTTHandler::publishSensorDeviceConfig(const char* deviceName) {

@@ -71,94 +71,35 @@ void BoxAccelerometer::loop() {
             if (AxX) {
                 if (PolX) {
                     tapOn = TapOn::BOTTOM;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Red, 2);
                 } else {
                     tapOn = TapOn::TOP;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Orange, 2);
                 }
             }
             if (AxY && AxZ) {
                 if (PolY && PolZ) {
                     tapOn = TapOn::BACK;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Blue, 3);
                 } else if (!PolY && !PolZ) {
                     tapOn = TapOn::FRONT;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Violet, 3);
                 } else if (PolY && !PolZ) {
                     tapOn = TapOn::LEFT;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Green, 3);
                 } else if (!PolY && PolZ) {
                     tapOn = TapOn::RIGHT;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::GreenYellow, 3);
                 }
             } else if (AxY) {
                 if (PolY) {
                     tapOn = TapOn::LEFT_BACK;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Blue, 3);
                 } else {
                     tapOn = TapOn::LEFT_FRONT;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Violet, 3);
                 }
             } else if (AxZ) {
                 if (PolZ) {
                     tapOn = TapOn::RIGHT_BACK;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Green, 3);
                 } else {
                     tapOn = TapOn::RIGHT_FRONT;
-                    Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::GreenYellow, 3);
                 }
             }
 
-            Log.disableNewline(true);
-            Log.verbose("Tap recieved %B, direction=%X, ", tap, tapOn);
-            Log.disableNewline(false);
-            switch (tapOn)
-            {
-            case TapOn::LEFT:
-                Log.printfln("LEFT");
-                break;
-            
-            case TapOn::RIGHT:
-                Log.printfln("RIGHT");
-                break;
-            
-            case TapOn::FRONT:
-                Log.printfln("FRONT");
-                break;
-            
-            case TapOn::BACK:
-                Log.printfln("BACK");
-                break;
-            
-            case TapOn::TOP:
-                Log.printfln("TOP");
-                break;
-            
-            case TapOn::BOTTOM:
-                Log.printfln("BOTTOM");
-                break;
-
-            case TapOn::LEFT_FRONT:
-                Log.printfln("LEFT_FRONT");
-                break;
-            
-            case TapOn::RIGHT_FRONT:
-                Log.printfln("RIGHT_FRONT");
-                break;
-            
-            case TapOn::LEFT_BACK:
-                Log.printfln("LEFT_BACK");
-                break;
-            
-            case TapOn::RIGHT_BACK:
-                Log.printfln("RIGHT_BACK");
-                break;
-            
-            default:
-                break;
-                Log.printfln("OTHER");
-            }
-
+            Events.handleAccelerometerTapsEvent(tapOn);
         }
         
     }

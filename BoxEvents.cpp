@@ -14,16 +14,16 @@ void BoxEvents::handleEarEvent(BoxButtonEars::EarButton earId, BoxButtonEars::Pr
 
     switch (earId) {
     case BoxButtonEars::EarButton::SMALL:
-        nameEar = "Small ear";
+        nameEar = "small";
         break;
     case BoxButtonEars::EarButton::BIG:
-        nameEar = "Big ear";
+        nameEar = "big";
         break;
     case BoxButtonEars::EarButton::BOTH:
-        nameEar = "Both ears";
+        nameEar = "both";
         break;
     default:
-        nameEar = "Unknown";
+        nameEar = "none";
         break;
     }
 
@@ -47,10 +47,10 @@ void BoxEvents::handleEarEvent(BoxButtonEars::EarButton earId, BoxButtonEars::Pr
         nameDuration = "long";
         break;
     case BoxButtonEars::PressedTime::VERY_LONG:
-        nameDuration = "very long";
+        nameDuration = "verylong";
         break;
     default:
-        nameDuration = "unknown length";
+        nameDuration = "unknown";
         break;
     }
 
@@ -101,6 +101,9 @@ void BoxEvents::handleEarEvent(BoxButtonEars::EarButton earId, BoxButtonEars::Pr
             }
         }
     } else if (pressType == BoxButtonEars::PressedType::RELEASE) {
+        char earState[24];
+        snprintf(earEvent, 24, "%s-%s", nameEar, nameDuration);
+        Box.mqttHandler.publishEarsState(earEvent);
         if (pressLength == BoxButtonEars::PressedTime::SHORT) {
             if (earId == BoxButtonEars::EarButton::BIG) {
                 
@@ -207,6 +210,60 @@ void BoxEvents::handlePowerEvent(BoxPower::PowerEvent event) {
         break;
     }
 }
+
+void BoxEvents::handleAccelerometerTapsEvent(BoxAccelerometer::TapOn tap) {
+    char* tapStr;
+    switch (tap)
+    {
+    case BoxAccelerometer::TapOn::LEFT:
+        tapStr = "LEFT";
+        break;
+    
+    case BoxAccelerometer::TapOn::RIGHT:
+        tapStr = "RIGHT";
+        break;
+    
+    case BoxAccelerometer::TapOn::FRONT:
+         tapStr = "FRONT";
+        break;
+    
+    case BoxAccelerometer::TapOn::BACK:
+         tapStr = "BACK";
+        break;
+    
+    case BoxAccelerometer::TapOn::TOP:
+         tapStr = "TOP";
+        break;
+    
+    case BoxAccelerometer::TapOn::BOTTOM:
+         tapStr = "BOTTOM";
+        break;
+
+    case BoxAccelerometer::TapOn::LEFT_FRONT:
+         tapStr = "LEFT_FRONT";
+        break;
+    
+    case BoxAccelerometer::TapOn::RIGHT_FRONT:
+         tapStr = "RIGHT_FRONT";
+        break;
+    
+    case BoxAccelerometer::TapOn::LEFT_BACK:
+         tapStr = "LEFT_BACK";
+        break;
+    
+    case BoxAccelerometer::TapOn::RIGHT_BACK:
+         tapStr = "RIGHT_BACK";
+        break;
+    
+    default:
+        break;
+        tapStr = "OTHER";
+    }
+
+    Box.mqttHandler.publishTapState(tapStr);
+    Box.boxPower.feedSleepTimer();
+}
+
 
 void BoxEvents::handleAccelerometerOrientationEvent(BoxAccelerometer::Orientation orient) {
     const char* orientText;

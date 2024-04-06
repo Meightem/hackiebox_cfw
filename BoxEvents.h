@@ -29,6 +29,7 @@ class BoxEvents {
         void handleBatteryEvent(BoxBattery::BatteryEvent state);
         void handleWiFiEvent(WrapperWiFi::ConnectionState state);
         void handlePowerEvent(BoxPower::PowerEvent event);
+        void handleAccelerometerTapsEvent(BoxAccelerometer::TapOn tap);
         void handleAccelerometerOrientationEvent(BoxAccelerometer::Orientation orient);
         void handleTagEvent(BoxRFID::TAG_EVENT event);
         void handleHeadphoneEvent(BoxDAC::HeadphoneEvent event);
