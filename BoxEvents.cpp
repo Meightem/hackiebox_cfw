@@ -141,6 +141,7 @@ void BoxEvents::handleBatteryEvent(BoxBattery::BatteryEvent state) {
         Box.boxBattery.stopBatteryTest();
         Box.boxBattery.logBatteryStatus();
         Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::Orange, 3);
+        Box.mqttHandler.publishBatterieState("critical");
         Box.boxLEDs.waitForAnimationToFinish();
         Box.boxPower.hibernate();
         break;
@@ -148,16 +149,19 @@ void BoxEvents::handleBatteryEvent(BoxBattery::BatteryEvent state) {
         Log.info("Battery is low, connect the charger!");
         Box.boxBattery.logBatteryStatus();
         Box.boxLEDs.setIdleAnimation(BoxLEDs::ANIMATION_TYPE::PULSE, BoxLEDs::CRGB::Orange);
+        Box.mqttHandler.publishBatterieState("low");
         break;
     case BoxBattery::BatteryEvent::CHR_CONNECT:
         Log.info("Charger connected");
         Box.boxBattery.logBatteryStatus();
         Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::White, 3);
+        Box.mqttHandler.publishChargerState("connected");
         break;
     case BoxBattery::BatteryEvent::CHR_DISCONNECT:
         Log.info("Charger disconnected");
         Box.boxBattery.logBatteryStatus();
         Box.boxLEDs.setActiveAnimationByIteration(BoxLEDs::ANIMATION_TYPE::BLINK, BoxLEDs::CRGB::DarkSlateGray, 3);
+        Box.mqttHandler.publishChargerState("disconnected");
         break;
     }
 }

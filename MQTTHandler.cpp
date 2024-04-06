@@ -34,6 +34,8 @@ void MQTTHandler::publishConfig() {
   publishSensorDeviceConfig("orientation");
   publishSensorDeviceConfig("status");
   publishSensorDeviceConfig("tonie");
+  publishSensorDeviceConfig("batterie");
+  publishSensorDeviceConfig("charger");
 }
 
 void MQTTHandler::publishOrientationState(String state) {
@@ -48,6 +50,14 @@ void MQTTHandler::publishTonieState(String state) {
   if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-tonie/state", state);
 }
 
+void MQTTHandler::publishBatterieState(String state) {
+  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-batterie/state", state);
+}
+
+void MQTTHandler::publishChargerState(String state) {
+  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-charger/state", state);
+}
+
 void MQTTHandler::publishSensorDeviceConfig(const char* deviceName) {
   char devicePath[64];
   snprintf(devicePath, 64, "homeassistant/sensor/toniebox-%s/config", deviceName);
@@ -57,5 +67,5 @@ void MQTTHandler::publishSensorDeviceConfig(const char* deviceName) {
 }
 
 void MQTTHandler::fillSensorDeviceConfig(char* configStr, const char* deviceName) {
-  snprintf(configStr, 384, "{\"~\":\"homeassistant/sensor/toniebox-%s\",\"name\":\"Toniebox %s\",\"uniq_id\":\"toniebox-%s\",\"stat_t\":\"~/state\",\"device\":{\"name\":\"toniebox\",\"identifiers\":[\"toniebox\"]}}", deviceName, deviceName, deviceName);
+  snprintf(configStr, 384, "{\"~\":\"homeassistant/sensor/toniebox-%s\",\"name\":\"%s\",\"uniq_id\":\"toniebox-%s\",\"stat_t\":\"~/state\",\"device\":{\"name\":\"toniebox\",\"identifiers\":[\"toniebox\"]}}", deviceName, deviceName, deviceName);
 }

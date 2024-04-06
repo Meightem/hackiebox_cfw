@@ -17,6 +17,8 @@ class MQTTHandler : public EnhancedThread {
     void publishStatusState(String state);
     void publishOrientationState(String state);
     void publishTonieState(String state);
+    void publishBatterieState(String state);
+    void publishChargerState(String state);
     
     private:
         const char* _hostname;
