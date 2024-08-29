@@ -32,6 +32,7 @@ class MQTTHandler : public EnhancedThread {
         String _json;
         void publishSensorDeviceConfig(const char* deviceName);
         void fillSensorDeviceConfig(char* configStr, const char* deviceName);
+        void connectMQTTClient();
         unsigned long lastMillis;
         unsigned long counter;
         bool mqttReady;

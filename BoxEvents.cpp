@@ -100,10 +100,11 @@ void BoxEvents::handleEarEvent(BoxButtonEars::EarButton earId, BoxButtonEars::Pr
                 }
             }
         }
+        char earMQTTEvent[24];
+        snprintf(earMQTTEvent, 24, "%s-%s", nameEar, nameDuration);
+        Box.mqttHandler.publishEarsState(earMQTTEvent);
     } else if (pressType == BoxButtonEars::PressedType::RELEASE) {
-        char earState[24];
-        snprintf(earEvent, 24, "%s-%s", nameEar, nameDuration);
-        Box.mqttHandler.publishEarsState(earEvent);
+        Box.mqttHandler.publishEarsState("");
         if (pressLength == BoxButtonEars::PressedTime::SHORT) {
             if (earId == BoxButtonEars::EarButton::BIG) {
                 

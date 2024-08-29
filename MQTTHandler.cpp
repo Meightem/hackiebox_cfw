@@ -13,22 +13,28 @@ void MQTTHandler::begin() {
   mqttClient.begin(wifiClient);
   mqttClient.setHost(_hostname, _port);
 
-  while(!mqttClient.connect("toniebox", _username, _password) && counter < 5) {
-    counter++;
-    delay(1000);
-  }
-
-  publishConfig();
+  connectMQTTClient();
 
   Log.info("Finished initalising MQTT");
-
-  mqttReady = true;
 }
 
 void MQTTHandler::loop() {  
   mqttClient.loop();
+  if (!mqttClient.connected()) {
+    connectMQTTClient();
+  }
 }
 
+void MQTTHandler::connectMQTTClient() {
+  counter = 0;
+  while(!mqttClient.connected() && !mqttClient.connect("toniebox", _username, _password) && counter < 5) {
+    counter++;
+    delay(1000);
+  }
+  if (mqttClient.connected()) {
+    publishConfig();
+  }
+}
 
 void MQTTHandler::publishConfig() {
   publishSensorDeviceConfig("orientation");
@@ -41,31 +47,31 @@ void MQTTHandler::publishConfig() {
 }
 
 void MQTTHandler::publishOrientationState(String state) {
-  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-orientation/state", state);
+  if(mqttClient.connected()) mqttClient.publish("homeassistant/sensor/toniebox-orientation/state", state);
 }
 
 void MQTTHandler::publishTapState(String state) {
-  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-tap/state", state);
+  if(mqttClient.connected()) mqttClient.publish("homeassistant/sensor/toniebox-tap/state", state);
 }
 
 void MQTTHandler::publishStatusState(String state) {
-  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-status/state", state);
+  if(mqttClient.connected()) mqttClient.publish("homeassistant/sensor/toniebox-status/state", state);
 }
 
 void MQTTHandler::publishTonieState(String state) {
-  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-tonie/state", state);
+  if(mqttClient.connected()) mqttClient.publish("homeassistant/sensor/toniebox-tonie/state", state);
 }
 
 void MQTTHandler::publishBatterieState(String state) {
-  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-batterie/state", state);
+  if(mqttClient.connected()) mqttClient.publish("homeassistant/sensor/toniebox-batterie/state", state);
 }
 
 void MQTTHandler::publishChargerState(String state) {
-  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-charger/state", state);
+  if(mqttClient.connected()) mqttClient.publish("homeassistant/sensor/toniebox-charger/state", state);
 }
 
 void MQTTHandler::publishEarsState(String state) {
-  if(mqttReady) mqttClient.publish("homeassistant/sensor/toniebox-ears/state", state);
+  if(mqttClient.connected()) mqttClient.publish("homeassistant/sensor/toniebox-ears/state", state);
 }
 
 void MQTTHandler::publishSensorDeviceConfig(const char* deviceName) {
